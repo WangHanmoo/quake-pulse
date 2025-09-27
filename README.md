@@ -1,8 +1,9 @@
 # quake-pulse
-Quake-Pulse is a data visualization project based on real-time earthquake data provided by the [USGS (United States Geological Survey)].
+An interactive web-based visualization of global earthquake activity, combining data from USGS with AI-generated summaries. This project demonstrates data fetching, visualization, interactivity via Streamlit, and optional AI explanation.
 It collects global earthquake data from the past 30 days and creates an animated, artistic world map using Plotly to visualize the distribution and magnitude of seismic events over time.Generates a natural language summary of recent earthquake patterns using OpenAI API or LMStudio. Streamlit App Provides a web-based interface for interactive exploration.
 
-If no API key is provided, the app will still run, but AI Summary will be disabled.
+With API key → AI summary enabled.
+Without API key → App still runs, summary disabled.
 
 # Data Source
 - [USGS Earthquake Hazards Program — GeoJSON Feeds](https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php)  
