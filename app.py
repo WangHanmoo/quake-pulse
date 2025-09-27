@@ -55,8 +55,13 @@ def plot_map(data, mag_min=0.0):
 
 # ---------- AI 自动解说 ----------
 def generate_summary(mag_min=0.0):
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        return "⚠️ AI Summary disabled (no API key set)."
+
     try:
-        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        from openai import OpenAI
+        client = OpenAI(api_key=api_key)
         prompt = f"Summarize recent global earthquakes with magnitude >= {mag_min}. \
                   Highlight patterns and significant regions in plain English."
         response = client.chat.completions.create(
@@ -69,6 +74,7 @@ def generate_summary(mag_min=0.0):
         return response.choices[0].message.content
     except Exception as e:
         return f"⚠️ AI summary unavailable: {e}"
+
 
 
 # ---------- Streamlit 界面 ----------
