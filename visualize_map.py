@@ -1,29 +1,27 @@
-import json
-import plotly.express as px
+# visualize_map.py
+import matplotlib.pyplot as plt
+from mpl_toolkits.basemap import Basemap
+import pandas as pd
+import process_data
+import fetch_usgs
 
-# 读取数据
-with open("data/earthquakes.json", "r") as f:
-    data = json.load(f)
+def visualize_quakes_on_map(df: pd.DataFrame):
+    plt.figure(figsize=(10, 6))
+    m = Basemap(projection='robin', lon_0=0, resolution='c')
+    m.drawcoastlines(linewidth=0.5)
+    m.drawcountries(linewidth=0.3)
+    m.drawmapboundary(fill_color='lightblue')
+    m.fillcontinents(color='lightgray', lake_color='lightblue')
 
-features = data["features"]
+    x, y = m(df["lon"].values, df["lat"].values)
+    sc = m.scatter(x, y, c=df["mag"], cmap="plasma", alpha=0.7, s=df["mag"]**3)
+    plt.colorbar(sc, label="Magnitude")
 
-# 提取需要的信息
-lats = [f["geometry"]["coordinates"][1] for f in features]
-lons = [f["geometry"]["coordinates"][0] for f in features]
+    plt.title("Global Earthquakes Visualization", fontsize=14)
+    plt.tight_layout()
+    plt.show()
 
-# 如果 mag 是 None，就用 0.0 代替
-mags = [f["properties"]["mag"] if f["properties"]["mag"] is not None else 0.0 for f in features]
-places = [f["properties"]["place"] for f in features]
-
-
-fig = px.scatter_geo(
-    lat=lats,
-    lon=lons,
-    size=[max(m, 0.1) for m in mags],  # 保证点的大小至少是 0.1
-    color=mags,
-    hover_name=places,
-    projection="natural earth",
-    title="Earthquakes (Past 30 days)"
-)
-
-fig.show()
+if __name__ == "__main__":
+    data = fetch_usgs.fetch_usgs()
+    df = process_data.geojson_to_df(data)
+    visualize_quakes_on_map(df)
